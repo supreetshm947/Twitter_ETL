@@ -24,10 +24,10 @@ def run_twitter_etl():
                                                tweet_fields=['author_id', 'created_at', 'text', 'lang'])
         json_response = pd.DataFrame([i.data for i in response.data]).to_json(orient="records")
         json_response = json.loads(json_response)
-        print(json_response)
+
         db = connect_to_db()
-        print("connected to db", db)
         existing_ids = get_stored_ids(db)
+
         counter = 0
         for i in json_response:
             if i["id"] not in existing_ids:
@@ -49,8 +49,9 @@ def connect_to_db():
 
 def get_stored_ids(db):
     stored_ids = []
-    print("in get_stored_ids", len(db))
     if len(db) > 0:
         for d in db.view("_all_docs"):
             stored_ids.append(Tweet.load(db, d.id)._data["id"])
-        return stored_ids
+    return stored_ids
+
+run_twitter_etl()

@@ -15,7 +15,6 @@ class Tweet(Document):
 
 
 def run_twitter_etl():
-    print("in etl")
     try:
         client = tweepy.Client(bearer_token=credentials.bearer_token)
         query = '("xbox" "usa")'
@@ -49,9 +48,8 @@ def connect_to_db():
 
 def get_stored_ids(db):
     stored_ids = []
-    if len(db) > 0:
-        for d in db.view("_all_docs"):
-            stored_ids.append(Tweet.load(db, d.id)._data["id"])
+    for d in db.view("_all_docs"):
+        stored_ids.append(Tweet.load(db, d.id)._data["id"])
     return stored_ids
 
 run_twitter_etl()
